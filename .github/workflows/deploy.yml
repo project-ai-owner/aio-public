@@ -1,0 +1,45 @@
+name: Deploy to GitHub Pages
+
+# 公開ゲート: リポジトリ変数 PUBLISH_ENABLED が 'true' のときのみデプロイする。
+# public 化・Pages 有効化・PUBLISH_ENABLED 設定は Human 承認事項（D-045・Layer 2）。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: ${{ vars.PUBLISH_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish guard (denylist)
+        run: bash scripts/publish-guard.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: ${{ vars.PUBLISH_ENABLED == 'true' }}
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
