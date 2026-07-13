@@ -7,25 +7,25 @@ description: AIO の現在の構成（Human / Claude Code / ChatGPT / GitHub / V
 
 ```mermaid
 flowchart TB
-  subgraph Humanの領域
-    H[Human プロジェクトオーナー<br>最終決定・事後レビュー・停止権限]
+  subgraph HUMAN["Human の領域"]
+    H["Human プロジェクトオーナー<br/>最終決定・事後レビュー・停止権限"]
   end
 
-  subgraph GitHub［SSOT・3リポジトリ+公開用］
-    OS[ai-improvement-os 非公開<br>ガバナンス・Decision・改善記録]
-    BIZ[business-portfolio 非公開<br>事業ケース検証]
-    INBOX[external-ai-inbox 非公開<br>外部AI出力の受け渡し箱]
-    PUB[aio-public 公開用<br>本サイト]
+  subgraph GH["GitHub（SSOT・3リポジトリ+公開用）"]
+    OS["ai-improvement-os 非公開<br/>ガバナンス・Decision・改善記録"]
+    BIZ["business-portfolio 非公開<br/>事業ケース検証"]
+    INBOX["external-ai-inbox 非公開<br/>外部AI出力の受け渡し箱"]
+    PUB["aio-public 公開用<br/>本サイト"]
   end
 
-  subgraph 実行系
-    MAIN[Claude Code メインセッション<br>コーディネータ・実装・merge代行]
-    SUB[subagents ×4<br>記録/事業/インフラ/レビュー]
-    CRON[クラウド定期ルーチン<br>日次監査・取り込み・準備]
-    VM[Ubuntu VM t3.small 2GB<br>認証情報が要る処理と定時実行]
+  subgraph RUN["実行系"]
+    MAIN["Claude Code メインセッション<br/>コーディネータ・実装・merge代行"]
+    SUB["subagents ×4<br/>記録/事業/インフラ/レビュー"]
+    CRON["クラウド定期ルーチン<br/>日次監査・取り込み・準備"]
+    VM["Ubuntu VM t3.small 2GB<br/>認証情報が要る処理と定時実行"]
   end
 
-  GPT[ChatGPT<br>ディープリサーチ・独立レビュー]
+  GPT["ChatGPT<br/>ディープリサーチ・独立レビュー"]
 
   H -- 指示・承認・停止 --> MAIN
   MAIN -- 委任 --> SUB
